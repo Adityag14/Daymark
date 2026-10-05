@@ -1,0 +1,41 @@
+{% extends 'layout.html' %}
+{% block title %}Create account | Daymark{% endblock %}
+{% block content %}
+<section class="auth-layout">
+    <div class="auth-intro">
+        <div>
+            <p class="eyebrow">MAKE SPACE FOR WHAT MATTERS</p>
+            <h1>Start with one<br><em>good intention.</em></h1>
+            <p class="auth-intro-copy">A calm place for the plans you want to turn into progress.</p>
+        </div>
+        <span class="auth-stamp" aria-hidden="true">D</span>
+    </div>
+    <div class="auth-form-area">
+        <h2>Create your account</h2>
+        <p class="auth-subtitle">Your next chapter starts with a clear list.</p>
+        {% if msg %}<p class="alert-message" role="alert">{{ msg }}</p>{% endif %}
+        <form class="auth-form" method="post" action="/auth/register">
+            <label class="field-label" for="email">Email</label>
+            <input id="email" class="text-input" type="email" name="email" autocomplete="email" required>
+            <label class="field-label" for="username">Username</label>
+            <input id="username" class="text-input" type="text" name="username" autocomplete="username" minlength="3" maxlength="40" required>
+            <div class="field-grid">
+                <div>
+                    <label class="field-label" for="firstname">First name</label>
+                    <input id="firstname" class="text-input" type="text" name="firstname" autocomplete="given-name" required>
+                </div>
+                <div>
+                    <label class="field-label" for="lastname">Last name</label>
+                    <input id="lastname" class="text-input" type="text" name="lastname" autocomplete="family-name" required>
+                </div>
+            </div>
+            <label class="field-label" for="password">Password</label>
+            <input id="password" class="text-input" type="password" name="password" autocomplete="new-password" minlength="8" required>
+            <label class="field-label" for="password2">Confirm password</label>
+            <input id="password2" class="text-input" type="password" name="password2" autocomplete="new-password" minlength="8" required>
+            <button class="button button-dark" type="submit">Create account</button>
+        </form>
+        <p class="auth-switch">Already have an account? <a href="/auth/">Sign in</a></p>
+    </div>
+</section>
+{% endblock %}
