@@ -1,4 +1,6 @@
 argon2-cffi
+uvicorn
+alembic
 bcrypt
 fastapi
 Jinja2
