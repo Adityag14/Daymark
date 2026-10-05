@@ -1,0 +1,23 @@
+<header class="site-header">
+    <nav class="topbar" aria-label="Main navigation">
+        <a class="brand" href="{% if user %}/todos/{% else %}/auth/{% endif %}">
+            <span class="brand-mark" aria-hidden="true">D</span>
+            <span>daymark</span>
+        </a>
+        {% if user %}
+        <div class="nav-links">
+            <a class="nav-link {% if request.url.path == '/todos/' %}is-current{% endif %}" href="/todos/">Today</a>
+            <a class="nav-link {% if request.url.path == '/todos/history' %}is-current{% endif %}" href="/todos/history">History</a>
+        </div>
+        <div class="nav-account">
+            <a class="account-name" href="/users/edit-password">{{ user.username }}</a>
+            <a class="nav-logout" href="/auth/logout">Sign out</a>
+        </div>
+        {% else %}
+        <div class="nav-account">
+            <a class="nav-link" href="/auth/">Sign in</a>
+            <a class="button button-small button-dark" href="/auth/register">Create account</a>
+        </div>
+        {% endif %}
+    </nav>
+</header>

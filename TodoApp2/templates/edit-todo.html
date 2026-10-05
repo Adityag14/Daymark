@@ -1,0 +1,43 @@
+{% extends 'layout.html' %}
+{% block title %}Edit task | Daymark{% endblock %}
+{% block content %}
+<section class="form-page">
+    <a class="back-link" href="/todos/">&#8592; Back to today</a>
+    <header class="form-heading">
+        <p class="eyebrow">REFINE THE PLAN</p>
+        <h1>Edit this <em>task.</em></h1>
+        <p class="welcome-copy">Update the details or remove it from your list.</p>
+    </header>
+    <form class="editor-form" method="post" action="/todos/edit-todo/{{ todo.id }}">
+        <label class="field-label" for="title">Task name</label>
+        <input id="title" class="text-input" type="text" name="title" maxlength="160" value="{{ todo.title }}" required>
+
+        <label class="field-label" for="description">Details <span class="optional-label">Optional</span></label>
+        <textarea id="description" class="text-input text-area" name="description" rows="4" maxlength="1000">{{ todo.description or '' }}</textarea>
+
+        <div class="field-grid">
+            <div>
+                <label class="field-label" for="priority">Priority</label>
+                <select id="priority" class="text-input" name="priority">
+                    <option value="1" {% if todo.priority == 1 %}selected{% endif %}>Low</option>
+                    <option value="2" {% if todo.priority == 2 %}selected{% endif %}>Low to medium</option>
+                    <option value="3" {% if todo.priority == 3 %}selected{% endif %}>Medium</option>
+                    <option value="4" {% if todo.priority == 4 %}selected{% endif %}>High</option>
+                    <option value="5" {% if todo.priority == 5 %}selected{% endif %}>Urgent</option>
+                </select>
+            </div>
+            <div>
+                <label class="field-label" for="due_date">Due date <span class="optional-label">Optional</span></label>
+                <input id="due_date" class="text-input" type="date" name="due_date" value="{{ todo.due_date.isoformat() if todo.due_date else '' }}">
+            </div>
+        </div>
+        <div class="form-actions">
+            <button class="button button-dark" type="submit">Save changes</button>
+            <a class="button button-quiet" href="/todos/">Cancel</a>
+        </div>
+    </form>
+    <form class="delete-form" method="post" action="/todos/delete/{{ todo.id }}" onsubmit="return confirm('Delete this task permanently?')">
+        <button class="danger-link" type="submit">Delete task</button>
+    </form>
+</section>
+{% endblock %}

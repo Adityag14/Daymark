@@ -1,0 +1,123 @@
+{% extends 'layout.html' %}
+{% block title %}Today | Daymark{% endblock %}
+{% block content %}
+<section class="welcome-row">
+    <div>
+        <p class="eyebrow">YOUR DAY, IN FOCUS</p>
+        <h1>Make today <em>count.</em></h1>
+        <p class="welcome-copy">Welcome back, {{ user.username }}. One clear next step is enough.</p>
+    </div>
+    <a class="button button-dark" href="/todos/add-todo"><span aria-hidden="true">+</span> New task</a>
+</section>
+
+<section class="stats-grid" aria-label="Your progress">
+    <article class="stat-block stat-highlight">
+        <p class="stat-label">Current streak</p>
+        <p class="stat-value">{{ streak }} <span>day{% if streak != 1 %}s{% endif %}</span></p>
+        <p class="stat-foot">Keep your rhythm going</p>
+    </article>
+    <article class="stat-block">
+        <p class="stat-label">In progress</p>
+        <p class="stat-value">{{ open_count }}</p>
+        <p class="stat-foot">Tasks on your list</p>
+    </article>
+    <article class="stat-block">
+        <p class="stat-label">Completed</p>
+        <p class="stat-value">{{ completed_count }}</p>
+        <p class="stat-foot">All-time achievements</p>
+    </article>
+    <article class="stat-block">
+        <p class="stat-label">This week</p>
+        <p class="stat-value">{{ completed_this_week }}</p>
+        <p class="stat-foot">Finished in the last 7 days</p>
+    </article>
+</section>
+
+<section class="insights-section" aria-label="Completion charts">
+    <div class="insights-heading">
+        <div>
+            <p class="eyebrow">YOUR PACE, IN PERSPECTIVE</p>
+            <h2>Momentum, at a glance.</h2>
+        </div>
+    </div>
+    <div class="insights-grid">
+        <article class="chart-panel">
+            <div class="chart-title-row">
+                <h3>Daily completions</h3>
+                <span>Last 7 days</span>
+            </div>
+            <div class="bar-chart" role="img" aria-label="Tasks completed each day over the last seven days">
+                {% for day in weekly_activity %}
+                <div class="bar-column" aria-label="{{ day.date }}: {{ day.count }} completed">
+                    <span class="bar-value">{{ day.count }}</span>
+                    <div class="bar-track"><span class="bar-fill {% if day.is_today %}bar-today{% endif %}" style="--bar-height: {{ day.height }}%"></span></div>
+                    <span class="bar-label">{{ day.label }}</span>
+                </div>
+                {% endfor %}
+            </div>
+        </article>
+        <article class="chart-panel completion-panel">
+            <div class="chart-title-row">
+                <h3>Task completion</h3>
+                <span>All time</span>
+            </div>
+            <div class="completion-content">
+                <div class="completion-chart" style="--done-angle: {{ completion_rate * 3.6 }}deg" role="img" aria-label="{{ completed_count }} of {{ open_count + completed_count }} tasks completed">
+                    <div class="completion-hole">
+                        <strong>{{ completion_rate }}%</strong>
+                        <span>complete</span>
+                    </div>
+                </div>
+                <div class="chart-legend">
+                    <p><span class="legend-swatch legend-done"></span><strong>{{ completed_count }}</strong> completed</p>
+                    <p><span class="legend-swatch legend-open"></span><strong>{{ open_count }}</strong> in progress</p>
+                </div>
+            </div>
+        </article>
+    </div>
+</section>
+
+<section class="task-section">
+    <div class="section-heading">
+        <div>
+            <p class="eyebrow">THE NEXT RIGHT THING</p>
+            <h2>Open tasks <span class="count-pill">{{ open_count }}</span></h2>
+        </div>
+        <a class="text-link" href="/todos/history">View completed history <span aria-hidden="true">&#8594;</span></a>
+    </div>
+
+    {% if todos %}
+    <div class="task-list">
+        {% for todo in todos %}
+        <article class="task-row">
+            <form class="complete-form" method="post" action="/todos/complete/{{ todo.id }}">
+                <button class="check-button" type="submit" aria-label="Complete {{ todo.title }}" title="Mark complete"></button>
+            </form>
+            <div class="task-main">
+                <a class="task-title" href="/todos/edit-todo/{{ todo.id }}">{{ todo.title }}</a>
+                {% if todo.description %}<p class="task-description">{{ todo.description }}</p>{% endif %}
+                <div class="task-meta">
+                    <span class="priority-tag {% if todo.priority >= 4 %}priority-high{% elif todo.priority == 3 %}priority-medium{% else %}priority-low{% endif %}">
+                        {% if todo.priority >= 4 %}High{% elif todo.priority == 3 %}Medium{% else %}Low{% endif %} priority
+                    </span>
+                    {% if todo.due_date %}
+                    <span class="due-label {% if todo.due_date < today %}is-overdue{% endif %}">
+                        {% if todo.due_date < today %}Overdue · {% else %}Due · {% endif %}{{ todo.due_date.strftime('%b %d') }}
+                    </span>
+                    {% endif %}
+                </div>
+            </div>
+            <a class="row-action" href="/todos/edit-todo/{{ todo.id }}">Edit</a>
+        </article>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <span class="empty-mark" aria-hidden="true">&#10003;</span>
+        <h3>A little breathing room.</h3>
+        <p>Your open list is clear. Add a task whenever you’re ready.</p>
+        <a class="button button-outline" href="/todos/add-todo">Add a task</a>
+    </div>
+    {% endif %}
+</section>
+{% endblock %}
